@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test de Velocidad</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+      background-color: #f4f4f4;
+    }
+    .gauge-assembly {
+      width: 300px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .gauge-container {
+      position: relative;
+      width: 300px;
+      height: 150px;
+    }
+    .increments-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .increment {
+      position: absolute;
+      font-size: 12px;
+      color: #555;
+      transform-origin: center;
+    }
+    /* Posiciones de los incrementos */
+    .increment:nth-child(1) { transform: rotate(225deg) translate(125px) rotate(-225deg); } /* 0 */
+    .increment:nth-child(2) { transform: rotate(247.5deg) translate(125px) rotate(-247.5deg); } /* 10 */
+    .increment:nth-child(3) { transform: rotate(270deg) translate(125px) rotate(-270deg); } /* 20 */
+    .increment:nth-child(4) { transform: rotate(315deg) translate(125px) rotate(-315deg); } /* 50 */
+    .increment:nth-child(5) { transform: rotate(360deg) translate(125px) rotate(-360deg); } /* 100 */
+
+    .gauge-needle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: center bottom;
+      transform: translate3d(-50%, -44%, 0) rotateZ(0deg);
+      transition: transform 0.5s ease-out;
+    }
+    .gauge {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    .gauge svg {
+      transform: rotate(-90deg);
+    }
+    .gauge-path-background {
+      fill: none;
+      stroke: #ccc;
+      stroke-width: 2;
+    }
+    .gauge-path-current-speed {
+      fill: none;
+      stroke: #3498db;
+      stroke-width: 2;
+      stroke-dasharray: 270;
+      stroke-dashoffset: 270;
+      transition: stroke-dashoffset 0.5s ease-out;
+    }
+    .speed-assembly {
+      margin-top: 20px;
+      font-size: 2rem;
+      color: #3498db;
+    }
+    .speed-assembly .unit {
+      font-size: 1.2rem;
+      color: #555;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 1.5rem;
+    }
+    #restart-test {
+      display: none;
+      background-color: #e74c3c;
+    }
+    #restart-test:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <h1>Test de Velocidad</h1>
+  <div class="gauge-assembly">
+    <div class="gauge-container">
+      <div class="increments-wrapper">
+        <span class="increment">0</span>
+        <span class="increment">10</span>
+        <span class="increment">20</span>
+        <span class="increment">50</span>
+        <span class="increment">100</span>
+      </div>
+      <div class="gauge-needle"></div>
+      <div class="gauge">
+        <svg width="100%" height="100%" viewBox="0 0 100 100">
+          <circle class="gauge-path-background" r="43" cx="50" cy="50"></circle>
+          <circle class="gauge-path-current-speed" r="43" cx="50" cy="50"></circle>
+        </svg>
+      </div>
+    </div>
+    <div class="speed-assembly">
+      <div class="number">0</div>
+      <span class="unit">Mbps</span>
+    </div>
+  </div>
+  <button id="test-speed">Iniciar Test</button>
+  <button id="restart-test">Reiniciar Test</button>
+  <div class="result">
+    <p>Subida: <span id="upload-speed">-</span> Mbps</p>
+    <p>Bajada: <span id="download-speed">-</span> Mbps</p>
+    <p>Latencia: <span id="latency">-</span> ms</p>
+  </div>
+
+  <script>
+    const needle = document.querySelector('.gauge-needle');
+    const currentSpeedDisplay = document.querySelector('.speed-assembly .number');
+    const gaugePath = document.querySelector('.gauge-path-current-speed');
+    const uploadSpeedEl = document.getElementById('upload-speed');
+    const downloadSpeedEl = document.getElementById('download-speed');
+    const latencyEl = document.getElementById('latency');
+    const startButton = document.getElementById('test-speed');
+    const restartButton = document.getElementById('restart-test');
+
+    function updateGauge(speed, maxSpeed = 100) {
+      const angle = (speed / maxSpeed) * 270;
+      needle.style.transform = `translate3d(-50%, -44%, 0) rotateZ(${angle}deg)`;
+      const dashOffset = 270 - (speed / maxSpeed) * 270;
+      gaugePath.style.strokeDashoffset = `${dashOffset}`;
+      currentSpeedDisplay.textContent = speed.toFixed(2);
+    }
+
+    function simulateSpeed() {
+      return Math.random() * 100;
+    }
+
+    function simulateLatency() {
+      return Math.floor(Math.random() * 50 + 10);
+    }
+
+    function resetGauge() {
+      updateGauge(0);
+      currentSpeedDisplay.textContent = '0';
+      uploadSpeedEl.textContent = '-';
+      downloadSpeedEl.textContent = '-';
+      latencyEl.textContent = '-';
+    }
+
+    function simulateNeedleMovement() {
+      const movementInterval = setInterval(() => {
+        updateGauge(Math.random() * 100);
+      }, 300);
+
+      setTimeout(() => {
+        clearInterval(movementInterval);
+      }, 3000); // Movimiento simulado por 3 segundos
+    }
+
+    function startTest() {
+      let countdown = 3; // Conteo regresivo inicial
+      startButton.textContent = `Iniciando en ${countdown}...`;
+      startButton.disabled = true;
+
+      const countdownInterval = setInterval(() => {
+        countdown--;
+        if (countdown > 0) {
+          startButton.textContent = `Iniciando en ${countdown}...`;
+        } else {
+          clearInterval(countdownInterval);
+          simulateNeedleMovement();
+          runTest(); // Inicia el test después del movimiento
+        }
+      }, 1000);
+    }
+
+    function runTest() {
+      let phase = 0;
+      const phases = ['subida', 'bajada', 'latencia'];
+
+      const interval = setInterval(() => {
+        if (phase >= phases.length) {
+          clearInterval(interval);
+          startButton.style.display = 'none';
+          restartButton.style.display = 'inline-block';
+          return;
+        }
+
+        if (phases[phase] === 'subida') {
+          const uploadSpeed = simulateSpeed();
+          updateGauge(uploadSpeed);
+          uploadSpeedEl.textContent = uploadSpeed.toFixed(2);
+        } else if (phases[phase] === 'bajada') {
+          const downloadSpeed = simulateSpeed();
+          updateGauge(downloadSpeed);
+          downloadSpeedEl.textContent = downloadSpeed.toFixed(2);
+        } else if (phases[phase] === 'latencia') {
+          const latency = simulateLatency();
+          latencyEl.textContent = latency;
+        }
+
+        phase++;
+      }, 2000);
+    }
+
+    startButton.addEventListener('click', startTest);
+    restartButton.addEventListener('click', () => {
+      resetGauge();
+      restartButton.style.display = 'none';
+      startButton.style.display = 'inline-block';
+      startButton.textContent = 'Iniciar Test';
+      startButton.disabled = false;
+    });
+  </script>
+</body>
+</html>
