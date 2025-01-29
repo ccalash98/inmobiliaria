@@ -76,7 +76,6 @@ ul.conta_icon li a {font-size: 12px;}
     }
     .navigation.navbar-dark .navbar-nav .nav-link {
        padding: 10px 10px
-        color: #fff;
     }
     .navigation.navbar-dark .navbar-toggler {
         border: inherit;
@@ -135,7 +134,7 @@ height: 231px;}
     }
     .navigation.navbar-dark .navbar-nav .nav-link {
         padding: 10px 10px;
-        color: #fff;
+        color: #12024f;
     }
     .navigation.navbar-dark .navbar-toggler {
         float: right;
