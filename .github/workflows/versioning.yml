@@ -3,7 +3,7 @@ name: Incrementar versión en push
 on:
   push:
     branches:
-      - main  # O la rama en la que estás trabajando
+      - main
 
 jobs:
   update-version:
@@ -20,7 +20,6 @@ jobs:
           echo "::set-output name=version::$version"
 
       - name: Incrementar la versión
-        id: increment_version
         run: |
           version=${{ steps.get_version.outputs.version }}
           IFS='.' read -r -a version_array <<< "$version"
@@ -34,5 +33,5 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add version.txt
-          git commit -m "Incrementar versión a ${{ steps.increment_version.outputs.new_version }}"
+          git commit -m "Incrementar versión a $new_version"
           git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
