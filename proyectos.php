@@ -70,19 +70,19 @@
                      <div class="collapse navbar-collapse" id="navbarNav">
                            <ul class="navbar-nav ml-auto">
                               <li class="nav-item">
-                                 <a class="nav-link " href="service.htm" onclick="hideNavbar()">INICIO</a>
+                                 <a class="nav-link " href="service.php" onclick="hideNavbar()">INICIO</a>
                               </li>
                               <li class="nav-item">  
-                                 <a class="nav-link active" href="proyectos.htm" onclick="hideNavbar()">NUESTROS PROYECTOS</a>
+                                 <a class="nav-link active" href="proyectos.php" onclick="hideNavbar()">NUESTROS PROYECTOS</a>
                               </li>
                               <li class="nav-item ">
-                                 <a class="nav-link" href="nosotros.htm" onclick="hideNavbar()">NOSOTROS</a>
+                                 <a class="nav-link" href="nosotros.php" onclick="hideNavbar()">NOSOTROS</a>
                               </li>       
                               <li class="nav-item">
-                                 <a class="nav-link" href="info.htm" onclick="hideNavbar()">INFORMACION</a>
+                                 <a class="nav-link" href="info.php" onclick="hideNavbar()">INFORMACION</a>
                               </li>  
                               <li class="nav-item">
-                                 <a class="nav-link" href="index.htm" onclick="hideNavbar()">TRABAJA CON NOSOTROS</a> 
+                                 <a class="nav-link" href="index.php" onclick="hideNavbar()">TRABAJA CON NOSOTROS</a> 
                               </li>
                            </ul>
                      </div>
