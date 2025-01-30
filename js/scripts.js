@@ -60,4 +60,14 @@
         function closeImage() {
             document.getElementById('imageModal').style.display = 'none';
         }
+    // Footer Includes
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("includes/footer.htm") // Asegúrate de que la ruta es correcta
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("footer-container").innerHTML = data;
+            })
+            .catch(error => console.error("Error cargando el footer:", error));
+    });
+    
     
