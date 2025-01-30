@@ -3,7 +3,7 @@ name: Incrementar versión en push
 on:
   push:
     branches:
-      - main
+      - main  # o la rama en la que estás trabajando
 
 jobs:
   update-version:
